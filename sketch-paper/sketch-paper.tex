@@ -1,0 +1,313 @@
+\documentclass[11pt]{article}
+
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{array}
+\usepackage{booktabs}
+\usepackage{url}
+\usepackage{setspace}
+\setstretch{1.1}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.75em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{0.6em}{}
+
+\title{\vspace{-1.0em}\textbf{Natural Language Edge Labelling (NLEL): Directing Structured LM Reasoning via Edge-Level Natural-Language Control}}
+\author{Abhinav Madahar}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We propose \textbf{Natural Language Edge Labelling (NLEL)}, a control layer for Tree-/Graph-of-Thoughts in which each edge carries a \emph{natural-language} label that directs how the next step should proceed. A \emph{tuner language model}---which may be a non-reasoning or a reasoning model---reads the tuple $(P,L,C)$ (parent node $P$, natural-language edge label $L$, and context $C$) and maps it directly to a control vector $\Pi$ that configures decoding, search, retrieval, and verification for the next expansion; the child is then expanded under $\Pi$. Under the hypothesis that natural language captures nuance that small formal symbolic taxonomies cannot, inserting an intermediate symbolic layer would be a lossy transformation; we therefore use natural language as the native control interface (see Choi, 2022).
+\end{abstract}
+
+\noindent\textbf{Keywords:} structured reasoning, tree-of-thoughts, graph-of-thoughts, natural-language control, process supervision, variance-aware search
+
+\section{Executive summary}
+We introduce \textbf{Natural Language Edge Labelling (NLEL)}: a control layer for structured LM reasoning in which each \emph{edge} carries a \emph{natural-language} label (e.g., ``apply an anthropological lens; probe for defeaters''). A \emph{tuner language model}---either \emph{non-reasoning} or \emph{reasoning} (e.g., CoT/ToT)---reads the tuple $(P,L,C)$ and \emph{maps it directly} to a \emph{control vector} $\Pi$ (decoding, search, retrieval, verification knobs). The child is then expanded under $\Pi$.
+
+\medskip
+\noindent\textbf{What can appear in $C$?} Example elements include:
+\begin{itemize}[leftmargin=1.2em]
+  \item The \textbf{full current tree/graph} (as text or structured form).
+  \item \textbf{Sibling/frontier summaries}: median uncertainty $\sigma$ across candidates; novelty statistics; best $(\mu,\sigma)$ among siblings; counts by edge label.
+  \item \textbf{Budgets and quotas}: remaining compute, per-form quotas, depth caps.
+  \item \textbf{Verifier configuration}: number/strictness of passes; available validators.
+  \item \textbf{Task metadata} and \textbf{domain status}: e.g., argumentation/attack-support status, threatened-mass metrics.
+\end{itemize}
+
+\medskip
+\noindent\textbf{Why natural language?} Under the working hypothesis that natural language can encode approach, perspective, and risk posture with nuance exceeding compact symbolic taxonomies, a symbolic intermediary would be \emph{lossy}. NLEL therefore treats edge language as the \emph{native control API}, converting it directly to actuators (Choi, 2022).
+
+\section{Motivation: Directing the reasoning process}
+The overarching aim is \textbf{control}: to \emph{direct how} a model reasons---its approach, perspective, and risk posture---rather than only shaping output format. CoT/ToT/GoT organize multi-step inference, but edges are commonly untyped dependencies or fixed modules. In \textbf{NLEL}, the edge becomes a \emph{first-class, executable natural-language control object}:
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Expressive direction}: labels such as ``seek a counterexample'', ``work backward'', ``analogical mapping'', ``anthropological lens; probe for defeaters'' specify \emph{how to think next}.
+  \item \textbf{Direct NL$\to$control}: edge text maps \emph{directly} to $\Pi$ (sampler, search, retrieval, verification) with no symbolic intermediary (Choi, 2022).
+  \item \textbf{Process attribution}: because each expansion is conditioned on an explicit label and a concrete $\Pi$, performance changes can be attributed to \emph{edge-level decisions}.
+\end{itemize}
+
+\section{Problem statement \& formalization}
+Inputs: a tuple $(P,L,C)$ where $P$ is the parent node, $L$ is \emph{natural-language text} describing the desired relationship/approach for the next edge, and $C$ is the remaining state (including the current tree/graph, sibling/frontier summaries, budgets, verifier config, etc.).
+
+\medskip
+\noindent Output: a control vector $\Pi$ with fields such as:
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Decoding}: temperature, top-$p$, max tokens, repetition penalty;
+  \item \textbf{Search}: branch quota, variance/risk coefficient $\beta$, UCT/exploration constant;
+  \item \textbf{Retrieval}: mixture weights over indices/corpora;
+  \item \textbf{Verification}: number/strictness of checks.
+\end{itemize}
+
+\noindent Let $\Psi$ denote the \emph{tuner mapping} from $(P,L,C)$ to $\Pi$: \quad $\Pi=\Psi(P,L,C)$. Historical expansions are labeled \emph{Pareto} or \emph{dominated} with respect to a multi-objective outcome vector (e.g., $\Delta V_{\text{root}}$, tokens used, verification events, success@compute) and presented in-prompt.
+
+\section{Approach}
+\subsection{Three-step expansion}
+\begin{enumerate}[leftmargin=1.2em]
+  \item \textbf{Choose the edge label} $L$ (natural-language relationship/approach).
+  \item \textbf{Find the control vector} $\Pi = \Psi(P,L,C)$.
+  \item \textbf{Expand the child} under $\Pi$.
+\end{enumerate}
+
+\subsection{Prompt-Only JSON Parameter Emitter (JPE)}
+A \emph{tuner LM} reads (i) a \textbf{schema} specifying control fields and bounds, (ii) a \textbf{historical ledger} of $(P_i,L_i,C_i)\Rightarrow \Pi_i$ with outcomes and tags (\emph{Pareto}/\emph{dominated}), and (iii) the \textbf{current case} $(P,L,C)$; it then \emph{samples} a single JSON control vector $\Pi$ that respects the schema and bounds.
+
+\medskip
+\noindent\textbf{Tuner type} (hyperparameter of the architecture):
+\begin{itemize}[leftmargin=1.2em,topsep=1pt,itemsep=1pt]
+  \item \textbf{Non-reasoning LM} (direct decoding),
+  \item \textbf{CoT-LM} (internal chain-of-thought while tuning; outputs JSON only),
+  \item \textbf{ToT-LM} (internal search-style deliberation while tuning; outputs JSON only).
+\end{itemize}
+
+\subsection{Context features (concise, measurable)}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Frontier uncertainty}: median $\sigma$ across candidate downstream values (ensembles/bootstraps/dropout).
+  \item \textbf{Novelty deficit}: low median nearest-neighbor distance among frontier candidates (embedding + lexical).
+  \item \textbf{Depth}: distance from root (for exploration annealing and quotas).
+\end{itemize}
+
+\subsection{Downstream selection (agnostic to NLEL)}
+Given $\Pi$, one can use a variance-aware score such as
+\[
+S \;=\; \mu + \beta\,\sigma + c_{\text{uct}}\,\sqrt{\frac{\log N(\text{parent})}{N(\text{edge})+1}},
+\]
+with $\beta$ and $c_{\text{uct}}$ provided by $\Pi$.
+
+\section{Historical ledger \& labels (in-prompt supervision)}
+For each logged expansion we store $(P,L,C)$, the chosen $\Pi$, and outcomes (e.g., $\Delta V_{\text{root}}$, tokens, verification events, success). Rows are tagged as \emph{Pareto} or \emph{dominated} and presented with \emph{Pareto} rows first, followed by \emph{dominated} contrasts matched on context. This yields contrastive, weight-free signals about efficient trade-offs directly in the prompt.
+
+\section{Distinguishing contributions}
+\begin{enumerate}[leftmargin=1.2em]
+  \item \textbf{Edge-level natural-language control}: edges carry executable \emph{natural-language} labels; label text directly controls decoding/search/retrieval/verification.
+  \item \textbf{Direct NL$\to$control mapping}: \emph{no} intermediary symbolic layer (avoids lossy transformation; preserves nuance/compositionality).
+  \item \textbf{Prompt-only controller}: the tuner learns from an in-prompt history; no separate training or retrieval infrastructure required.
+  \item \textbf{Tuner ablations as a first-class scientific question}: non-reasoning vs CoT vs ToT tuner (controller only), holding the child reasoner fixed.
+  \item \textbf{Process-level attribution}: outcomes attributable to the edge label and $\Pi$, enabling clean analysis of \emph{how} control affects reasoning.
+\end{enumerate}
+
+\section{Relation to prior work (brief)}
+CoT/ToT/GoT structure multi-step inference but generally treat edges as untyped or predeclared modules; NLEL makes edges \emph{natural-language control points} with direct actuator effects. ReAct/Reflexion interleave reasoning with actions/feedback; NLEL targets \emph{edge-time control} of generation and search. Typed reasoning/meta-prompting choose reasoning modes; NLEL uses \emph{edge phrasing} as the unified control interface, converted \emph{directly} to knobs.
+
+\section{Method details (ready to implement)}
+\subsection{Input tuple \& context separation}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Parent $P$}: the node being expanded.
+  \item \textbf{Label $L$}: \emph{natural-language text} describing the desired relationship/approach for the edge.
+  \item \textbf{Context $C$}: remaining state (including the full current tree/graph, sibling/frontier summaries, budgets, verifier config, etc.).
+  \item \textbf{Historical ledger}: contrastive rows with \emph{Pareto}/\emph{dominated} tags and outcome metrics.
+\end{itemize}
+
+\subsection{Control schema (example; adjustable)}
+\begin{verbatim}
+{
+  "decode":   { "temperature": [0.1, 1.2], "top_p": [0.5, 1.0], "max_tokens": [16, 256] },
+  "search":   { "branch_quota": [1, 6], "risk_beta": [0.0, 1.5], "uct_c": [0.0, 2.0] },
+  "verify":   { "level": ["normal","strict"], "passes": [0, 3] },
+  "retrieval":{ "anthropology": [0.0,1.0], "general": [0.0,1.0], "other": [0.0,1.0] }
+}
+\end{verbatim}
+Continuous fields are clamped to bounds; mixtures are normalized to sum to 1.
+
+\subsection{Tuner prompt (expanded template)}
+\textbf{System:}
+\begin{quote}\itshape
+You are a control-strategy tuner. Read the historical examples and their outcomes. For the CURRENT CASE, output \textbf{only} a JSON control object that satisfies the schema and \textbf{maximizes} the objective below. Do not include any text outside JSON.
+\end{quote}
+
+\noindent\textbf{Objective (example):}
+\begin{quote}\itshape
+Maximize success@compute and $\Delta V_{\text{root}}$. Penalties: $\lambda_{\text{compute}}=0.3$ per 100 tokens; $\lambda_{\text{risk}}=0.2$ per verification failure.
+\end{quote}
+
+\noindent\textbf{Schema (with bounds):} Insert the JSON schema (above), adapted per task.
+
+\noindent\textbf{Historical ledger (contrastive):} Provide rows in the format:
+\begin{verbatim}
+# Example k  (PARETO or DOMINATED)
+PARENT: <text of P>
+LABEL: "<natural-language edge label>"
+CONTEXT-HEADER: depth=…; budgets=…; frontier: median σ=…; novelty=…; siblings: …
+CONTROL: { ... JSON within bounds ... }
+OUTCOMES: ΔV_root=…; success=…; tokens=…; verify_fail=…
+\end{verbatim}
+List \emph{Pareto} rows first, then \emph{dominated} contrast pairs matched on context regime.
+
+\noindent\textbf{Current case:}
+\begin{verbatim}
+PARENT: <text of P>
+LABEL: "<natural-language edge label>"
+CONTEXT-HEADER: depth=…; budgets=…; frontier: median σ=…; novelty=…; siblings: …
+CONTEXT-FULL: <full current tree/graph and state, as budget allows>
+\end{verbatim}
+
+\noindent\textbf{Assistant (tuner LM):} Outputs one JSON control object $\Pi$ respecting schema and bounds. The tuner may be a non-reasoning LM, CoT-LM, or ToT-LM.
+
+\subsection{Stability \& safety (non-intrusive)}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Schema/bounds validation} for emitted JSON.
+  \item \textbf{Trust-region projection} around safe defaults to prevent pathological jumps.
+  \item \textbf{Depth-annealed exploration} to keep late-depth expansions conservative.
+\end{itemize}
+
+\section{Evaluation plan}
+\subsection{Benchmarks}
+We target the following suite:
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{GSM8K (full)} --- multi-step arithmetic word problems.
+  \item \textbf{ARC-Challenge} --- adversarial multiple-choice science questions.
+  \item \textbf{HotpotQA (distractor)} --- two-hop open-domain QA with supporting facts.
+  \item \textbf{EntailmentBank (S/M)} --- multi-hop textual entailment with explanations.
+  \item \textbf{ProofWriter (depth $\le$ 3--4)} --- rule-based reasoning with short proof chains.
+  \item \textbf{MBPP (standard)} --- Python function synthesis with unit tests.
+\end{itemize}
+We will \emph{limit sample counts as needed to remain within budget}, while maintaining equal-compute comparisons and process metrics.
+
+\subsection{Baselines}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Unlabeled edges} (vanilla ToT/GoT control).
+  \item \textbf{Label-as-node-text only} (edge label does not control actuators).
+  \item \textbf{Heuristic control rules} (n-gram triggers for $\Pi$).
+  \item \textbf{Entropy/diversity-guided branching} (no NL control).
+  \item \textbf{Risk-aware UCT without NL edges}.
+\end{itemize}
+
+\subsection{Ablations}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Tuner type}: non-reasoning LM vs CoT-LM vs ToT-LM (controller only; child fixed).
+  \item \textbf{Ledger composition}: with vs without \emph{dominated} contrasts; with vs without \emph{Pareto} tags.
+  \item \textbf{History size}: include larger in-prompt histories where feasible to test data-efficiency of in-context tuning within budget.
+  \item \textbf{Symbolification ablation}: NL$\to$symbolic tag$\to$control vs \textbf{direct NL$\to$control} (NLEL).
+\end{itemize}
+
+\subsection{Metrics}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Success@compute} (equal-compute curves).
+  \item \textbf{$\Delta V_{\text{root}}$} uplift per expansion.
+  \item \textbf{Defeater-discovery latency} (where applicable).
+  \item \textbf{Pareto-coverage} of outcomes relative to historical fronts.
+  \item \textbf{Control validity rate} (JSON correctness, projection frequency).
+  \item \textbf{Cost per improvement} (tokens or \$ per \% gain).
+\end{itemize}
+
+\section{Budget (compute-rich; tuner LM = child reasoner)}
+\textbf{Assumption:} the \emph{same frontier-scale LM} is used as both \emph{tuner} and \emph{child reasoner}.
+
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Compute (GPU/Cloud):} \$2{,}200--\$3{,}200 \\
+  $\quad$ \emph{Approx.\ }350--500 GPU-hours on A100/L40S-class hardware across experiments (tuner=child); includes ablations and repeated runs.
+
+  \item \textbf{Model/API \& tooling:} \$600--\$1{,}500 \\
+  $\quad$ \textbf{ChatGPT Pro} (research assistant role): \$200/month $\times$ 3--6 months = \$600--\$1{,}200. \\
+  $\quad$ Optional ancillary API usage or storage/egress: \$0--\$300.
+
+  \item \textbf{Publication \& dissemination (ICML 2026):} \$2{,}000--\$3{,}200 \\
+  $\quad$ Registration (single author): \$1{,}000--\$1{,}600. \\
+  $\quad$ Travel \& lodging (economy airfare + 3--4 nights): \$900--\$1{,}500. \\
+  $\quad$ Poster/misc.: \$100.
+\end{itemize}
+
+\noindent\textbf{Total indicative budget:} \textbf{\$4{,}800--\$7{,}700}.
+
+\section{Risks \& mitigations}
+\begin{itemize}[leftmargin=1.2em]
+  \item \textbf{Edge-label overfitting to phrasing.} Include \emph{dominated} contrasts matched by context; vary label paraphrases; test robustness.
+  \item \textbf{Prompt budget pressure (larger histories).} Compress ledger headers; standardize row format; scale history size to the token budget; amortize across runs.
+  \item \textbf{Control instability.} Enforce schema validation, bounds, trust-region projection, and depth-annealed exploration.
+  \item \textbf{Attribution confounds.} Hold the child reasoner fixed when varying tuner type; report equal-compute curves and process metrics.
+\end{itemize}
+
+\section{Deliverable}
+A single deliverable: \textbf{Submission to ICML 2026} (main conference) with \textbf{open-source code} and \textbf{open data} (prompts, logs, and evaluation scripts) sufficient to reproduce all tables and figures.
+
+\section*{Appendix}
+\subsection*{A. Tuner prompt (expanded template)}
+\textbf{System:}
+\begin{quote}\itshape
+You are a control-strategy tuner. Read the historical examples and their outcomes. For the CURRENT CASE, output \textbf{only} a JSON control object that satisfies the schema and \textbf{maximizes} the objective below. Do not include any text outside JSON.
+\end{quote}
+
+\noindent\textbf{Objective (example):}
+\begin{quote}\itshape
+Maximize success@compute and $\Delta V_{\text{root}}$. Penalties: $\lambda_{\text{compute}}=0.3$ per 100 tokens; $\lambda_{\text{risk}}=0.2$ per verification failure.
+\end{quote}
+
+\noindent\textbf{Schema (with bounds):} Include the JSON schema and numeric bounds as in \S8.2.
+
+\noindent\textbf{Historical ledger (contrastive):} Rows in the format:
+\begin{verbatim}
+# Example k  (PARETO or DOMINATED)
+PARENT: <text of P>
+LABEL: "<natural-language edge label>"
+CONTEXT-HEADER: depth=…; budgets=…; frontier: median σ=…; novelty=…; siblings: …
+CONTROL: { ... JSON within bounds ... }
+OUTCOMES: ΔV_root=…; success=…; tokens=…; verify_fail=…
+\end{verbatim}
+List \emph{Pareto} rows first, then \emph{dominated} contrast pairs matched on context.
+
+\noindent\textbf{Current case:}
+\begin{verbatim}
+PARENT: <text of P>
+LABEL: "<natural-language edge label>"
+CONTEXT-HEADER: depth=…; budgets=…; frontier: median σ=…; novelty=…; siblings: …
+CONTEXT-FULL: <full current tree/graph and state, as budget allows>
+\end{verbatim}
+
+\noindent\textbf{Assistant (tuner LM):} Outputs one JSON control object $\Pi$; tuner type may be non-reasoning, CoT, or ToT.
+
+\subsection*{B. Minimal runtime pseudocode}
+\begin{verbatim}
+def nlel_tune(P, L, C, ledger, schema, objective):
+    prompt = render_prompt(schema=schema,
+                           objective=objective,
+                           history_block=ledger,
+                           parent=P, label=L, context=C)
+    json_out = tuner_lm.sample(prompt)           # tuner = non-reasoning or reasoning LM
+    Pi = parse_json(json_out)
+    Pi = clamp_and_project(Pi, schema, trust_region)  # bounds + stability
+    return Pi
+
+def expand_with_Pi(P, L, C, Pi):
+    child = child_reasoner.generate(P, L, C, controls=Pi)
+    return child
+\end{verbatim}
+
+\subsection*{C. Notation}
+$(P,L,C)$: parent node, natural-language edge label, context. \quad
+$\Pi$: control vector (actuators). \quad
+$\Psi$: tuner mapping $(P,L,C)\mapsto \Pi$. \quad
+$\mu,\sigma$: estimated mean and uncertainty of candidate downstream values.
+
+\section*{One-paragraph summary}
+\textbf{Natural Language Edge Labelling (NLEL)} treats each edge in structured LM reasoning as a \emph{natural-language control primitive}. A tuner LM---non-reasoning or reasoning---reads $(P,L,C)$ and \emph{directly} emits a control vector $\Pi$ (decoding, search, retrieval, verification) with \emph{no} intermediary symbolic layer, avoiding a lossy transformation under the hypothesis that natural language conveys nuance better than small tag sets (Choi, 2022). We present a prompt-only instantiation that learns from an in-prompt historical ledger and evaluate on GSM8K, ARC-Challenge, HotpotQA (distractor), EntailmentBank (S/M), ProofWriter (depth $\le$ 3--4), and MBPP, with ablations over non-reasoning/CoT/ToT tuner types while holding the child reasoner fixed. The deliverable is an ICML 2026 submission with open code and data demonstrating improved compute-efficiency and directed exploration relative to unlabeled or symbolically-typed edges.
+
+\section*{References}
+\noindent Choi, Y. (2022). The curious case of commonsense intelligence. \emph{Daedalus, 151}(2), 139--155. \href{https://doi.org/10.1162/daed_a_01906}{https://doi.org/10.1162/daed\_a\_01906}.
+
+\end{document}
