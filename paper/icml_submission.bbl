@@ -1,9 +1,16 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{13}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Cobbe et~al.(2021)]{cobbe2021training}
+Cobbe, K. et~al.
+\newblock Training verifiers to solve math word problems.
+\newblock In \emph{Advances in Neural Information Processing Systems}, 2021.
+\newblock Please replace with full, accurate bibliographic details if
+  available.
 
 \bibitem[Gao et~al.(2023)Gao, Madaan, Zhou, Alon, Liu, Yang, and
   Neubig]{gao2023pal}
@@ -35,7 +42,7 @@ Schick, T., Dwivedi-Yu, J., Dess{\`i}, R., Raunak, V., Havrilla, A., Scialom,
 \newblock \emph{arXiv preprint arXiv:2302.04761}, 2023.
 
 \bibitem[Shen et~al.(2023)Shen, Liu, Chen, Xu, Wang, Zhang, Liang, Huang, Chen,
-  and Zhang]{shen2023hugginggpt}
+  and Zhang]{shen2023HuggingGPT}
 Shen, Y., Liu, K., Chen, W., Xu, X., Wang, F., Zhang, Z., Liang, X., Huang, J.,
   Chen, Z., and Zhang, Y.
 \newblock Hugginggpt: Solving ai tasks with chatgpt and its friends in hugging
@@ -46,6 +53,12 @@ Shen, Y., Liu, K., Chen, W., Xu, X., Wang, F., Zhang, Z., Liang, X., Huang, J.,
 Shinn, N., Labash, T., and Madaan, A.
 \newblock Reflexion: Language agents with verbal reinforcement learning.
 \newblock \emph{arXiv preprint arXiv:2303.11366}, 2023.
+
+\bibitem[{Significant-Gravitas}(2023)]{autogpt2023}
+{Significant-Gravitas}.
+\newblock Autogpt.
+\newblock \url{https://github.com/Significant-Gravitas/AutoGPT}, 2023.
+\newblock Accessed 2025-10-05.
 
 \bibitem[Wang et~al.(2022)Wang, Wei, Schuurmans, Le, Chi, and
   Zhou]{wang2022selfconsistency}
@@ -74,5 +87,11 @@ Yao, S., Yu, D., Zhao, J., Shafran, I., Welleck, S., and Radev, D.
 Yao, S., Zhao, J., Yu, D., Wang, N.~D., and Radev, D.
 \newblock React: Synergizing reasoning and acting in language models.
 \newblock \emph{arXiv preprint arXiv:2210.03629}, 2023{\natexlab{b}}.
+
+\bibitem[{Yohei Nakajima}(2023)]{babyagi2023}
+{Yohei Nakajima}.
+\newblock Babyagi.
+\newblock \url{https://github.com/yoheinakajima/babyagi}, 2023.
+\newblock Accessed 2025-10-05.
 
 \end{thebibliography}

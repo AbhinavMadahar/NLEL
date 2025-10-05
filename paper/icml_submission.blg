@@ -3,44 +3,45 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: icml_submission.aux
 The style file: icml2025.bst
 Database file #1: icml_submission.bib
-You've used 10 entries,
+Database file #2: icml_submission_additions.bib
+You've used 13 entries,
             2773 wiz_defined-function locations,
-            635 strings with 7107 characters,
-and the built_in function-call counts, 6117 in all, are:
-= -- 457
-> -- 651
-< -- 0
-+ -- 218
-- -- 207
-* -- 580
-:= -- 1031
-add.period$ -- 30
-call.type$ -- 10
-change.case$ -- 99
-chr.to.int$ -- 9
-cite$ -- 20
-duplicate$ -- 200
-empty$ -- 311
-format.name$ -- 217
-if$ -- 1192
+            651 strings with 7545 characters,
+and the built_in function-call counts, 7113 in all, are:
+= -- 546
+> -- 691
+< -- 3
++ -- 233
+- -- 219
+* -- 627
+:= -- 1185
+add.period$ -- 42
+call.type$ -- 13
+change.case$ -- 111
+chr.to.int$ -- 12
+cite$ -- 26
+duplicate$ -- 253
+empty$ -- 415
+format.name$ -- 233
+if$ -- 1410
 int.to.chr$ -- 2
 int.to.str$ -- 1
-missing$ -- 10
-newline$ -- 58
-num.names$ -- 40
-pop$ -- 198
+missing$ -- 11
+newline$ -- 76
+num.names$ -- 52
+pop$ -- 234
 preamble$ -- 1
-purify$ -- 89
+purify$ -- 98
 quote$ -- 0
-skip$ -- 187
+skip$ -- 226
 stack$ -- 0
-substring$ -- 20
-swap$ -- 12
+substring$ -- 26
+swap$ -- 16
 text.length$ -- 0
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 110
+type$ -- 143
 warning$ -- 0
-while$ -- 30
+while$ -- 39
 width$ -- 0
-write$ -- 127
+write$ -- 169
