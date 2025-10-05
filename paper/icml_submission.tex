@@ -160,25 +160,25 @@ We expand the structure at a parent $p$ in two phases: label emission and bundle
       \node[node] (root) {Goal: Prove that if $n$ is odd then $n^2$ is odd.}; \\
       % Row 2 (2 nodes)
       \node[node] (alg) {%
-        \textbf{$\mathrm{\Pi}$ preview:} temp=0.15; retrieval=0; verify=2; max\_tokens=40; $\beta$=0.10.%
+        \textbf{$\mathrm{\Pi}$ preview:} temp=0.15; retrieval=0; verify=2; max\_tokens=40; $\beta$=0.10; gen\_count=1.%
         \par\noindent\rule{\linewidth}{0.3pt}\vspace{2pt}\\%
         Algebraic step: $n=2k{+}1 \Rightarrow n^2=4k^2+4k+1$.%
       };
       &
       \node[node] (contra) {%
-        \textbf{$\mathrm{\Pi}$ preview:} temp=0.20; top-$p$=0.60; retrieval=[math-lemmas:0.70, general:0.30]; verify=1; max\_tokens=40; $\beta$=0.10.%
+        \textbf{$\mathrm{\Pi}$ preview:} temp=0.20; top-$p$=0.60; retrieval=[math-lemmas:0.70, general:0.30]; verify=1; max\_tokens=40; $\beta$=0.10, gen\_count=1.%
         \par\noindent\rule{\linewidth}{0.3pt}\vspace{2pt}\\%
         Contrapositive: if $n^2$ is even then $n$ is even (parity lemma).%
       }; \\
       % Row 3 (2 nodes; both under the SAME parent 'alg')
       \node[node] (alg_reduce) {%
-        \textbf{$\mathrm{\Pi}$ preview:} temp=0.12; max\_tokens=24; verify=1.%
+        \textbf{$\mathrm{\Pi}$ preview:} temp=0.12; max\_tokens=24; verify=1. gen\_count=1.%
         \par\noindent\rule{\linewidth}{0.3pt}\vspace{2pt}\\%
         Reduce: $n^2=2(2k^2+2k)+1$ (odd).%
       };
       &
       \node[node] (alg_stop) {%
-        \textbf{$\mathrm{\Pi}$ preview:} temp=0.10; max\_tokens=16; stop=1.%
+        \textbf{$\mathrm{\Pi}$ preview:} temp=0.10; max\_tokens=16; stop=1. gen\_count=1.%
         \par\noindent\rule{\linewidth}{0.3pt}\vspace{2pt}\\%
         Conclude oddness; stop.%
       }; \\
@@ -202,7 +202,7 @@ We expand the structure at a parent $p$ in two phases: label emission and bundle
       -- node[elabelTop]{Stop with canonical form}
       (alg_stop.north);
   \end{tikzpicture}
-  \caption{Rows of width $[1,2,2]$ with edges drawn explicitly from the bottom of each parent node to the top of the child node. Natural-language edge labels sit on the edges near the child (never adjoining each other). Each child node starts with an upright \emph{$\mathrm{\Pi}$ preview}, then a horizontal separator, then the node’s reasoning content.}
+  \caption{A synthetic example of NLEL being used in a ToT setting. For simplicity, gen\_count is set to one for all $\Pi_i$.}
   \label{fig:nlel_schematic}
 \end{figure*}
  -----------------------------------------------------------------------
