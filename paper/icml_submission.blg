@@ -3,10 +3,9 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: icml_submission.aux
 The style file: icml2025.bst
 Database file #1: icml_submission.bib
-Database file #2: icml_submission_additions.bib
 You've used 13 entries,
             2773 wiz_defined-function locations,
-            651 strings with 7545 characters,
+            650 strings with 7520 characters,
 and the built_in function-call counts, 7113 in all, are:
 = -- 546
 > -- 691
