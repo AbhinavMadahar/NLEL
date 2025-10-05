@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -11,6 +11,20 @@ Gao, L., Madaan, A., Zhou, Y., Alon, U., Liu, P., Yang, Y., and Neubig, G.
 \newblock Pal: Program-aided language models.
 \newblock \emph{arXiv preprint arXiv:2211.10435}, 2023.
 
+\bibitem[Kojima et~al.(2022)Kojima, Gu, Reid, Matsuo, and
+  Iwasawa]{kojima2022letsthink}
+Kojima, T., Gu, S., Reid, M., Matsuo, Y., and Iwasawa, Y.
+\newblock Large language models are zero-shot reasoners.
+\newblock \emph{arXiv preprint arXiv:2205.11916}, 2022.
+
+\bibitem[Nye et~al.(2021)Nye, Andreas, Gur-Ari, Tenenbaum, Lake, and
+  Linzen]{nye2021showyourwork}
+Nye, M., Andreas, J., Gur-Ari, G., Tenenbaum, J.~B., Lake, B.~M., and Linzen,
+  T.
+\newblock Show your work: Scratchpads for intermediate computation with
+  language models.
+\newblock \emph{arXiv preprint arXiv:2112.00114}, 2021.
+
 \bibitem[Schick et~al.(2023)Schick, Dwivedi-Yu, Dess{\`i}, Raunak, Havrilla,
   Scialom, Chen, Niehues, Schulte, Zettlemoyer, Schmid, and
   Petroni]{schick2023toolformer}
@@ -20,12 +34,13 @@ Schick, T., Dwivedi-Yu, J., Dess{\`i}, R., Raunak, V., Havrilla, A., Scialom,
 \newblock Toolformer: Language models can teach themselves to use tools.
 \newblock \emph{arXiv preprint arXiv:2302.04761}, 2023.
 
-\bibitem[Shen et~al.()Shen, Liu, Chen, Xu, Wang, Zhang, Liang, Huang, Chen, and
-  Zhang]{shen2023hugginggpt}
+\bibitem[Shen et~al.(2023)Shen, Liu, Chen, Xu, Wang, Zhang, Liang, Huang, Chen,
+  and Zhang]{shen2023hugginggpt}
 Shen, Y., Liu, K., Chen, W., Xu, X., Wang, F., Zhang, Z., Liang, X., Huang, J.,
   Chen, Z., and Zhang, Y.
 \newblock Hugginggpt: Solving ai tasks with chatgpt and its friends in hugging
   face.
+\newblock \emph{arXiv preprint arXiv:2303.17580}, 2023.
 
 \bibitem[Shinn et~al.(2023)Shinn, Labash, and Madaan]{shinn2023reflexion}
 Shinn, N., Labash, T., and Madaan, A.
@@ -47,9 +62,9 @@ Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., Chi, E., Le,
   models.
 \newblock \emph{arXiv preprint arXiv:2201.11903}, 2022.
 
-\bibitem[Yao et~al.(2023{\natexlab{a}})Yao, Yu, Zhao, Yu, Welleck, and
+\bibitem[Yao et~al.(2023{\natexlab{a}})Yao, Yu, Zhao, Shafran, Welleck, and
   Radev]{yao2023tree}
-Yao, S., Yu, D., Zhao, J., Yu, I.~S., Welleck, S., and Radev, D.
+Yao, S., Yu, D., Zhao, J., Shafran, I., Welleck, S., and Radev, D.
 \newblock Tree of thoughts: Deliberate problem solving with large language
   models.
 \newblock \emph{arXiv preprint arXiv:2305.10601}, 2023{\natexlab{a}}.
