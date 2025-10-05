@@ -5,6 +5,13 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[she()]{shen2023HuggingGPT}
+{HuggingGPT}: Solving {AI} tasks with {ChatGPT} and its friends in {Hugging
+  Face}, author = {Shen, Yongliang and Liu, Kaitao and Chen, Weize and Xu,
+  Xiang and Wang, Fei and Zhang, Zihan and Liang, Xuefeng and Huang, Junjie and
+  Chen, Zhongyuan and Zhang, Yongdong}, journal = {arXiv preprint
+  arXiv:2303.17580}, year = {2023}.
+
 \bibitem[Cobbe et~al.(2021)]{cobbe2021training}
 Cobbe, K. et~al.
 \newblock Training verifiers to solve math word problems.
@@ -40,14 +47,6 @@ Schick, T., Dwivedi-Yu, J., Dess{\`i}, R., Raunak, V., Havrilla, A., Scialom,
   Petroni, F.
 \newblock Toolformer: Language models can teach themselves to use tools.
 \newblock \emph{arXiv preprint arXiv:2302.04761}, 2023.
-
-\bibitem[Shen et~al.(2023)Shen, Liu, Chen, Xu, Wang, Zhang, Liang, Huang, Chen,
-  and Zhang]{shen2023HuggingGPT}
-Shen, Y., Liu, K., Chen, W., Xu, X., Wang, F., Zhang, Z., Liang, X., Huang, J.,
-  Chen, Z., and Zhang, Y.
-\newblock Hugginggpt: Solving ai tasks with chatgpt and its friends in hugging
-  face.
-\newblock \emph{arXiv preprint arXiv:2303.17580}, 2023.
 
 \bibitem[Shinn et~al.(2023)Shinn, Labash, and Madaan]{shinn2023reflexion}
 Shinn, N., Labash, T., and Madaan, A.
