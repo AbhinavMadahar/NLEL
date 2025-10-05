@@ -52,7 +52,70 @@
 
 \section{Related Work}
 
+
+
 \section{Preliminaries and Problem Setup}
+\label{sec:prelims}
+
+\paragraph{Reasoning structure.}
+We model inference as expansion of a directed tree (or a DAG with tie-breaking) $G=(V,E)$.
+Each node $v\in V$ is a \emph{reasoning step} with textual content $x_v$; the root $v_0$ holds the task statement.
+Each edge $e=(u\!\rightarrow\! v)\in E$ carries a natural-language label $L_e$ and induces a control vector $\Pi_e$ used to expand the child $v$.
+We distinguish two roles: a \emph{labeller} LM $\Lambda$ that proposes edge labels, and a \emph{tuner} LM $\Psi$ that emits control, with mappings
+\begin{equation*}
+  L=\Lambda(P,C), \qquad \Pi=\Psi(P,L,C).
+\end{equation*}
+Here $P$ denotes the parent node text (and any exposed metadata), and $C$ denotes a compact context.
+
+\paragraph{Context $C$.}
+We keep $C$ compact and measurable. In our setting, $C$ may include:
+\begin{itemize}
+  \item \textbf{Frontier uncertainty:} summaries such as the median $\sigma$ across candidate values;
+  \item \textbf{Novelty:} nearest-neighbor distances among frontier candidates (embedding or lexical);
+  \item \textbf{Depth:} distance from the root;
+  \item \textbf{Sibling/frontier summaries:} best $(\mu,\sigma)$ among siblings;
+  \item \textbf{Raw label history:} the most recent edge labels as \emph{strings} (from siblings and, optionally, a short frontier window);
+  \item \textbf{Budgets:} token usage, retrieval calls, and verification outcomes.
+\end{itemize}
+
+\paragraph{Control schema $\Pi$.}
+The tuner controls a task-agnostic set of fields:
+\begin{itemize}
+  \item \textbf{Decoding:} temperature, top-$p$, maximum tokens, repetition penalty;
+  \item \textbf{Generation:} \texttt{gen\_count} $\in \mathbb{N}^{+}$ (bundle size under this label);
+  \item \textbf{Search:} branch quota and an exploration coefficient $\beta$;
+  \item \textbf{Retrieval:} mixture weights over indices or corpora;
+  \item \textbf{Verification:} number and strictness of checks;
+  \item \textbf{(Optional) Selection hint:} \texttt{keep\_k} $\in \mathbb{N}^{+}$ (if set, passed to the child-selection module).
+\end{itemize}
+Given $\Pi$, a downstream selector (agnostic to NLEL) can use scores such as $S=\mu+\beta\,\sigma$ or a standard ToT culling operator.
+
+\paragraph{Edge labels.}
+Labels are produced by $\Lambda$ from $(P,C)$.
+
+\paragraph{Problem instances.}
+An instance consists of a task $T$, root $v_0$ text, and an evaluation function producing $(\mu,\sigma)$ for partial answers.
+Unless noted, we treat $G$ as a tree; extension to DAGs is straightforward by merging isomorphic textual states.
+
+\paragraph{Notation summary.}
+\begin{center}
+\begin{tabular}{@{}ll@{}}
+\toprule
+Symbol & Meaning \\\midrule
+$P$ & parent node content (text + exposed metadata) \\
+$L$ & natural-language edge label \\
+$C$ & compact context features (bulleted above) \\
+$\Lambda$ & labeller LM mapping $(P,C)\!\to\!L$ \\
+$\Psi$ & tuner LM mapping $(P,L,C)\!\to\!\Pi$ \\
+$\Pi$ & control vector (decoding, search, retrieval, verification) \\
+$\mu,\sigma$ & value / uncertainty estimates used by the selector \\
+$w$ & retrieval mixture weights over indices/corpora \\
+$\beta$ & exploration coefficient in selection \\
+$c_e,\,C_t$ & per-edge and cumulative compute cost \\
+\texttt{gen\_count} & generation bundle size (per edge label) \\
+\bottomrule
+\end{tabular}
+\end{center}
 
 \section{Method}
 \label{sec:method}
@@ -72,12 +135,15 @@ We propose \emph{Natural Language Edge Labelling} (NLEL), a control layer for st
 \paragraph{Mapping.} Let $\Psi : (P,L,C)\mapsto \Pi$ denote the tuner mapping. In our prompt-only instantiation (Section~\ref{subsec:jpe}), $\Psi$ is realized by a JSON parameter emitter that respects a schema with bounds and learns from a compact in-prompt ledger of historical expansions.
 
 \subsection{Expansion Procedure}
-We expand the structure in three steps:
+We expand the structure at a parent $p$ in two phases: label emission and bundle generation, followed by a single selection step.
 \begin{enumerate}
-  \item \textbf{Select an edge label $L$.} Labels are natural-language imperatives specifying \emph{how} to think next (e.g., generate a counterexample, analogize, or recurse on a subgoal).
-  \item \textbf{Emit control $\Pi = \Psi(P,L,C)$.} The tuner LM consumes $(P,L,C)$ and produces a single control vector adhering to a schema with bounds.
-  \item \textbf{Expand under $\Pi$.} Generate or select the child using the actuated settings; update the frontier summaries and budgets in $C$.
+  \item \textbf{Emit labels.} Use the labeller to obtain a set of edge labels for $p$:
+  $\mathcal{L}_p = \{L_1,\dots,L_m\}$, where each $L_i=\Lambda(P,C)$. The number of labels may be governed by a search quota or policy.
+  \item \textbf{Generate bundles under each label.} For each $L\in\mathcal{L}_p$, obtain control $\Pi=\Psi(P,L,C)$ and generate a bundle of \texttt{gen\_count} candidate children under $L$ using $\Pi$.
+  \item \textbf{Select children (ToT).} Let $\mathcal{B}(L)$ denote the bundle generated under label $L$. Form the union of all candidates for the parent, $\mathcal{C}_p=\bigcup_{L\in\mathcal{L}_p}\mathcal{B}(L)$, and apply the standard ToT child-selection operator to $\mathcal{C}_p$. We inherit ToT's selector as-is.
+  \item \textbf{Update state.} Add survivors to the frontier and update $C$ (budgets, summaries, raw label history strings).
 \end{enumerate}
+
 
 % ---------- WIDE FIGURE WITH A LARGER TREE AND CONCRETE LABELS ----------
 \begin{figure*}[!t]
@@ -139,7 +205,7 @@ We expand the structure in three steps:
   \caption{Rows of width $[1,2,2]$ with edges drawn explicitly from the bottom of each parent node to the top of the child node. Natural-language edge labels sit on the edges near the child (never adjoining each other). Each child node starts with an upright \emph{$\mathrm{\Pi}$ preview}, then a horizontal separator, then the node’s reasoning content.}
   \label{fig:nlel_schematic}
 \end{figure*}
-% -----------------------------------------------------------------------
+ -----------------------------------------------------------------------
 
 \subsection{Prompt-Only JSON Parameter Emitter (JPE)}
 \label{subsec:jpe}
@@ -151,12 +217,11 @@ To keep $C$ compact and measurable, we surface a small set of features that capt
   \item \textbf{Frontier uncertainty:} median $\sigma$ across candidate downstream values (from ensembles, bootstraps, or dropout estimates);
   \item \textbf{Novelty deficit:} median nearest-neighbor distance among frontier candidates (embedding or lexical);
   \item \textbf{Depth:} distance from root (enables exploration annealing and quota schedules);
-  \item \textbf{Sibling/frontier summaries:} best $(\mu,\sigma)$ among siblings; counts by edge label; budget usage.
+  \item \textbf{Sibling/frontier summaries:} best $(\mu,\sigma)$ among siblings; raw label history (strings); budget usage.
 \end{itemize}
 
 \subsection{Downstream Selection (Agnostic to NLEL)}
-Given $\Pi$, any downstream planner can be used. A simple variance-aware score combines an estimate of value and uncertainty, for example $S=\mu+\beta\,\sigma$, optionally augmented with a UCT-style exploration term. The specific selector is orthogonal to NLEL; $\Pi$ only sets the knobs.
-
+We inherit the standard ToT child-selection operator and apply it once to the union of all candidates produced for a parent (across labels).
 \subsection{Stability and Safety}
 We employ non-intrusive guards: (i) strict schema/bounds validation for emitted JSON; (ii) projection into a trust region around safe defaults to prevent pathological jumps; and (iii) depth-annealed exploration so late-depth expansions remain conservative.
 
