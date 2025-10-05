@@ -94,7 +94,6 @@ The tuner controls a task-agnostic set of fields:
   \item \textbf{Search:} branch quota and an exploration coefficient $\beta$;
   \item \textbf{Retrieval:} mixture weights over indices or corpora;
   \item \textbf{Verification:} number and strictness of checks;
-  \item \textbf{(Optional) Selection hint:} \texttt{keep\_k} $\in \mathbb{N}^{+}$ (if set, passed to the child-selection module).
 \end{itemize}
 Given $\Pi$, a downstream selector (agnostic to NLEL) can use scores such as $S=\mu+\beta\,\sigma$ or a standard Tree-of-Thought (ToT) culling operator.
 
@@ -138,7 +137,6 @@ We propose \emph{Natural Language Edge Labelling} (NLEL), a control layer for st
   \item \textbf{Decoding:} temperature, top-$p$, max tokens, repetition penalty;
   \item \textbf{Search:} branch quota, variance/risk coefficient $\beta$; UCT/exploration constant $c_{\text{uct}}$;
   \item \textbf{Generation:} number of candidates \texttt{gen\_count} per label;
-  \item \textbf{Selection hint:} keep $k$ (optional budget hint to the selector);
   \item \textbf{Retrieval:} mixture weights over indices or corpora;
   \item \textbf{Verification:} number and strictness of checks.
 \end{itemize}
