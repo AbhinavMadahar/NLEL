@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 07:57
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 08:23
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -712,9 +712,6 @@ LaTeX Font Info:    Font shape `OML/ptm/m/n' in size <9> not available
 
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-
 dist/fonts/enc/dvips/base/8r.enc}
@@ -732,15 +729,20 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 [2]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 8
-4.
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 1
+00.
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 9
-6.
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+[3]
+LaTeX Font Info:    Trying to load font information for OT1+pcr on input line 1
+12.
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
 Package microtype Info: Loading generic protrusion settings for font family
@@ -748,65 +750,65 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-
-
-Overfull \hbox (48.9703pt too wide) in paragraph at lines 112--128
+Overfull \hbox (48.9703pt too wide) in paragraph at lines 128--144
  [] 
  []
 
 
 
-[3]
-
 
 
 [4]
-Underfull \hbox (badness 10000) in paragraph at lines 254--258
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 270--274
  \OT1/ptm/b/n/10 (+20) Propo-si-tion 5.1 (NLEL strictly gen-er-al-izes
  []
 
 
-Underfull \hbox (badness 1226) in paragraph at lines 254--258
+Underfull \hbox (badness 1226) in paragraph at lines 270--274
 \OT1/ptm/b/n/10 (+20) CoT/ToT/GoT). \OT1/ptm/m/n/10 (+20) NLEL re-cov-ers stan-
 dard con-trollers
  []
 
 
 
-
-Underfull \hbox (badness 5050) in paragraph at lines 287--288
+[5]
+Underfull \hbox (badness 5050) in paragraph at lines 303--304
  \OT1/ptm/b/n/10 (+20) Propo-si-tion 5.4 (Trust-region bound). \OT1/ptm/m/n/10 
 (+20) If $\OT1/cmr/m/n/10 ^^E[] =
  []
 
 
 
-[5]
-Underfull \hbox (badness 10000) in paragraph at lines 305--308
+
+Underfull \hbox (badness 10000) in paragraph at lines 321--324
 \OT1/ptm/m/n/10 (+20) where $\OML/cmm/m/it/10 ^^U > \OT1/cmr/m/n/10 0$ \OT1/ptm
 /m/n/10 (+20) mon-e-tizes com-pute (to-
  []
 
 
-Underfull \hbox (badness 3209) in paragraph at lines 305--308
+Underfull \hbox (badness 3209) in paragraph at lines 321--324
 \OT1/ptm/m/n/10 (+20) kens/retrieval/verification). De-fine the \OT1/ptm/m/it/1
 0 (+20) risk-adjusted
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 316--317
+Underfull \hbox (badness 10000) in paragraph at lines 332--333
 []\OT1/ptm/b/n/10 (+20) (C1) Trust-region dom-i-nance:
  []
 
 
-Underfull \hbox (badness 1968) in paragraph at lines 316--317
+Underfull \hbox (badness 1968) in paragraph at lines 332--333
 [][] []\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x; \OT1/cmr/m/n/10 ^^A^^E) \OMS/cmsy/m
 /n/10 ^^T \OT1/cmr/m/n/10 0$ \OT1/ptm/m/n/10 (+20) for al-most all $\OML/cmm/m/
 it/10 x$
  []
 
 
-Overfull \hbox (33.27348pt too wide) detected at line 332
+
+[6]
+Overfull \hbox (33.27348pt too wide) detected at line 348
 []\OT1/cmr/m/n/10 ^^A\OML/cmm/m/it/10 J  \OMS/cmsy/m/n/10 ^^U  []  ^^@  []  ^^@
   [] \OML/cmm/m/it/10 :
  []
@@ -814,14 +816,10 @@ Overfull \hbox (33.27348pt too wide) detected at line 332
 
 
 
-
-[6]
-Underfull \hbox (badness 1735) in paragraph at lines 385--388
+Underfull \hbox (badness 1735) in paragraph at lines 401--404
 \OT1/ptm/b/n/10 (+20) Compute-aware met-rics. \OT1/ptm/m/n/10 (+20) In line wit
 h the con-trol
  []
-
-
 
 
 
@@ -835,27 +833,34 @@ h the con-trol
 
 [9]
 
-(./icml_submission.bbl
-Underfull \vbox (badness 10000) has occurred while \output is active []
+
+Underfull \hbox (badness 3838) in paragraph at lines 574--575
+[]\OT1/ptm/m/n/10 (+20) We in-tro-duced \OT1/ptm/b/n/10 (+20) Nat-u-ral Lan-gua
+ge Edge La-belling
+ []
 
 
 
 [10]
 
-)
+(./icml_submission.bbl
 
-[11] (./icml_submission.aux)
+[11])
+
+
+
+[12] (./icml_submission.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 18091 strings out of 474567
- 344388 string characters out of 5753151
- 769013 words of memory out of 5000000
+ 18109 strings out of 474567
+ 344553 string characters out of 5753151
+ 770741 words of memory out of 5000000
  40571 multiletter control sequences out of 15000+600000
- 599859 words of font info for 302 fonts, out of 8000000 for 9000
+ 600895 words of font info for 314 fonts, out of 8000000 for 9000
  309 hyphenation exceptions out of 8191
  84i,17n,87p,2805b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
@@ -876,10 +881,10 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icml_submission.pdf (11 pages, 291939 bytes).
+Output written on icml_submission.pdf (12 pages, 298720 bytes).
 PDF statistics:
- 144 PDF objects out of 1000 (max. 8388607)
- 90 compressed objects within 1 object stream
+ 147 PDF objects out of 1000 (max. 8388607)
+ 92 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  61453 words of extra memory for PDF output out of 61914 (max. 10000000)
 
