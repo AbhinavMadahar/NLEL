@@ -507,8 +507,52 @@ Appendix materials include step-level traces where the labeller emits instructio
 \end{itemize}
 
 \paragraph{Summary (to be updated post-study).}
-Pre-registered forecast: NLEL (JPE) will consistently outperform strong ToT-style baselines by $\sim2$--$4$ points on accuracy and deliver $\sim1.4\times$ success@compute at half the baseline budget, with the largest relative gains in compute-constrained regimes. Ablations and sensitivity trends are expected to mirror Section~\ref{sec:theory}.\section{Limitations}
+Pre-registered forecast: NLEL (JPE) will consistently outperform strong ToT-style baselines by $\sim2$--$4$ points on accuracy and deliver $\sim1.4\times$ success@compute at half the baseline budget, with the largest relative gains in compute-constrained regimes. Ablations and sensitivity trends are expected to mirror Section~\ref{sec:theory}.
 
+\section{Limitations}
+
+Our study introduces \emph{Natural Language Edge Labelling} (NLEL)---a labeller--tuner overlay that maps free-form edge labels to a control vector $\Pi$ (decoding, search, retrieval, verification) under a trust-region guard, with Tree-of-Thought (ToT) child selection using the score $S=\mu+\beta\sigma$ (\S\ref{sec:method}). While modular and general, this design has several limitations that bound our claims.
+
+\paragraph{Empirical scope and maturity.}
+The main tables in \S\ref{sec:experiments} are \emph{pre-registered forecasts}, not measured outcomes. Effect sizes (e.g., success@compute gains) are hypotheses until full runs are executed and audited; realized improvements may be smaller, task-dependent, or null.
+
+\paragraph{Controller dependence.}
+Our overlay is evaluated on a fixed child reasoner and a specific ToT culling rule that uses $S=\mu+\beta\sigma$ with an annealed exploration coefficient $\beta(d)$ (see \S\ref{sec:method}). Forecasted gains may be tied to this selector and its guards; alternative selectors (e.g., learned value models or multi-round re-ranking) could change the relative benefits of labelled bundles. Several arguments also assume mild smoothness of $S(x,\Pi)$ with respect to $\Pi$, which can break if either the child reasoner or selector introduces discontinuities.
+
+\paragraph{Prompt-only tuner and ledger constraints.}
+The tuner is realized as a JSON Parameter Emitter (JPE; \S\ref{subsec:jpe}) driven by a compact in-prompt ledger. This simplifies prototyping but inherits prompt-programming fragility: context limits, order sensitivity, and non-determinism across model or API revisions. The compact ledger and schema quantization (e.g., coarse bins for fields in $\Pi$) bound how closely the tuner can approximate per-state optimal controls, potentially inducing a shortfall when fine control is needed.
+
+\paragraph{Information bottlenecks in the context $C$.}
+We intentionally keep $C$ ``compact and measurable'' (frontier uncertainty summaries, novelty signals, depth, brief label history, budget bits; \S\ref{sec:method}). These summaries may discard task-critical structure (e.g., detailed semantics of intermediate proofs), and the utility of $C$ can vary by domain. In particular, noisy or poorly calibrated $(\mu,\sigma)$ estimates can mislead both the selector and the tuner's verification/branching decisions.
+
+\paragraph{Free-form labels and domain shift.}
+Because edge labels are natural language, their semantics can drift across datasets or disciplines (e.g., ``seek a counterexample'' instantiates differently in arithmetic vs.\ commonsense QA). Our own expected failure modes anticipate domain-mismatch of math-tuned labels on commonsense tasks; more broadly, label taxonomies that help on one suite may be neutral or harmful elsewhere. Robustness to adversarial or ambiguous labels is not yet characterized.
+
+\paragraph{Verification assumptions.}
+We rely on lightweight verification with a small, tunable number of passes. Lemma-style arguments use independence or a union bound, but real verifiers are correlated, diminishing expected returns from additional passes. Over-verification can also prune valid variants when labels or reference answers are noisy.
+
+\paragraph{Retrieval control and tool quality.}
+The tuner modulates retrieval mixture weights $w$; if indices drift or are weak, larger $w$ can hurt accuracy (``retrieval drift''). Tool quality is therefore a confound: measured gains may reflect corpus/connector quality as much as controller quality. Our novelty-gated retrieval heuristic does not guarantee safety against spurious fetches.
+
+\paragraph{Compute and systems overhead.}
+Although we report success@compute, the overlay adds real latency and token cost (labeller, tuner, verification, extra branches). In tight-latency settings, wall-clock overhead can negate token efficiency. Trust-region and quota guards mitigate pathological expansion but also cap potential upside where aggressive exploration would be beneficial.
+
+\paragraph{Structural assumptions.}
+Most exposition and experiments treat the reasoning structure as a \emph{tree}. While extension to DAGs is straightforward in principle, we do not evaluate settings with large-scale node-merging or heavy reuse of isomorphic states, where credit assignment and label reuse become more complex.
+
+\paragraph{Benchmark breadth and external validity.}
+We focus on four public suites (GSM8K, MATH subset, StrategyQA, ARC-Challenge). These underrepresent interactive tool use, long-horizon planning, and open-ended synthesis. We also hold the child reasoner fixed to attribute gains to NLEL, which reduces ecological validity for end-to-end agent stacks where controller and reasoner co-evolve.
+
+\paragraph{Safety and governance.}
+Our guards are non-intrusive (schema validation, trust-region projection, depth-annealed exploration; \S\ref{sec:method}). They improve stability but are not a comprehensive safety framework; they do not reason about the \emph{content} of labels or downstream tool calls beyond budget bits. A fuller treatment would require content-aware constraints, audit trails for label semantics, and red-team evaluations.
+
+\paragraph{Mitigations and near-term work.}
+(1) Replace forecasts with complete empirical results and release seeds/logs;
+(2) evaluate alternative selectors and verifiers (learned value models, consensus mechanisms);
+(3) ablate larger $C$ feature sets and richer ledgers to quantify bits-to-performance trade-offs;
+(4) stress-test label taxonomies under domain shift and adversarial prompting;
+(5) measure wall-clock latency and energy, not just tokens; and
+(6) extend experiments to DAG reuse and interactive, tool-rich tasks to probe external validity.
 \section{Conclusion}
 
 \section*{Impact Statement}
