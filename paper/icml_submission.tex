@@ -241,7 +241,129 @@ We employ non-intrusive guards: (i) strict schema/bounds validation for emitted 
 \subsection{Design Notes}
 NLEL is compatible with a non-reasoning tuner or a reasoning tuner (e.g., CoT/ToT) used \emph{only} as a controller. The child reasoner can be held fixed to cleanly attribute outcomes to the edge label and the control vector~$\Pi$.
 
-\section{Theory (Optional)}
+\section{Theory}
+\label{sec:theory}
+
+This section provides compact, decision-relevant guarantees for Natural Language Edge Labelling (NLEL). 
+A parent state is $x=(P,C)$; the labeller $\Lambda$ emits a label $L$; the tuner $\Psi$ maps $(P,L,C)\mapsto \Pi$ within a bounded \emph{schema}; and downstream selection is Tree-of-Thought--style with score $S=\mu+\beta\sigma$. 
+Distances over controls use the \emph{schema-normalized} $\ell_\infty$ metric; a trust-region projection clamps $\Pi$ to a ball of radius $r$ around safe defaults $\Pi_0$. 
+
+\subsection{Reductions and a residual-superset view}
+
+\paragraph{Proposition 5.1 (NLEL strictly generalizes CoT/ToT/GoT).}
+NLEL recovers standard controllers as special cases:
+(i) \textbf{CoT:} If $\Lambda$ emits a single fixed label $L_{\text{def}}$ and $\Psi$ emits a fixed $\Pi_{\text{cot}}$ with $\texttt{branch\_quota}=1$ and $\texttt{gen\_count}=1$, the induced structure is a chain and the procedure equals CoT.
+(ii) \textbf{ToT/GoT:} If $\Lambda\equiv L_{\text{def}}$ and $\Psi$ emits the baseline ToT/GoT controls $\Pi_{\text{tot}}$, NLEL reproduces that baseline's expansion and ToT selection.
+(iii) \textbf{Residual-superset view (ResNet analogy):} View the baseline controller $g(P,C)$ as an identity path. NLEL adds a residual path $r(P,L,C)$ switched by $L$: choosing $L_{\text{def}}$ recovers $g$; non-default labels activate $r$. Hence NLEL is a strict superset of capability; under the same ToT selector, enlarging the candidate pool via labels cannot reduce the top survivor's score (Proposition~\ref{prop:anytime}).
+
+\paragraph{Sketch.}
+Instantiate $\Lambda$ as a constant and $\Psi$ as a constant JSON Parameter Emitter matching the baseline; NLEL's pipeline then coincides with the baseline controller. The residual-superset claim follows because $L_{\text{def}}$ plus trust-region projection recovers the baseline exactly.
+
+\subsection{Anytime monotonicity of ToT selection (and why ``diversity'' helps)}
+\label{sec:anytime}
+
+\paragraph{Proposition 5.2 (Anytime monotonicity under $S=\mu+\beta\sigma$).}\label{prop:anytime}
+Fix per-candidate $(\mu,\sigma)$ and a retention size $k$. 
+At a parent, form the union of all candidates generated under all labels, then keep the top-$k$ by $S$. 
+If you enlarge the candidate multiset (e.g., by increasing per-label bundle size or adding a label), the best retained $S$ is \emph{non-decreasing}.
+
+\paragraph{Sketch.}
+The maximum (or any top-$k$ order statistic) over a multiset cannot decrease when moving to a superset under the same ranking rule.
+
+\paragraph{Corollary 5.3 (Labels as structured diversity).}
+Let $p_\ell=\Pr(S\ge\tau\mid \text{label } \ell)$ be the tail rate for crossing a threshold $\tau$, and draw $n_\ell$ candidates per label with $\sum_\ell n_\ell=N$. Then
+\begin{align*}
+  \Pr(\max S\ge\tau)&=1-\prod_\ell (1-p_\ell)^{n_\ell}\ \ge\ 1-(1-\bar p)^N,\\
+  &\qquad \bar p=\tfrac{1}{N}\sum_\ell n_\ell p_\ell.
+\end{align*}
+Thus, holding $N$ fixed, allocating quota across labels that induce \emph{distinct} $p_\ell$ weakly increases the chance that at least one candidate clears $\tau$. 
+When a single label is known to maximize $p_\ell$ for the current parent, concentrating on it is optimal.
+
+\subsection{Stability and safety from guards}
+
+Assume $S(x,\Pi)$ is $L$-Lipschitz in $\Pi$ over the schema domain, under the schema-normalized $\ell_\infty$ metric used by the trust region.
+
+\paragraph{Proposition 5.4 (Trust-region bound).}
+If $\Pi'=\mathrm{Proj}_{\mathcal{B}(\Pi_0,r)}(\Pi)$, then
+\[
+\big|S(x,\Pi')-S(x,\Pi)\big|\ \le\ L\,\|\Pi'-\Pi\|_\infty\ \le\ Lr.
+\]
+Small radii bound per-step score swings and prevent catastrophic jumps.
+
+\paragraph{Lemma 5.5 (Verification passes reduce error).}
+If a single verification pass accepts an incorrect child with probability $\varepsilon$ (conditioned on that child), then $t$ independent passes reduce this to $\varepsilon^t$; without independence, a union bound gives $\le t\varepsilon$. 
+This justifies exposing verification counts in $\Pi$.
+
+\paragraph{Lemma 5.6 (Exploration annealing).}
+With a depth-dependent exploration coefficient $\beta(d)$ such that $\beta(d{+}1)\le \beta(d)$, and if uncertainty $\sigma$ falls in expectation along correct paths (verifier-guided), then the expected exploration bonus $\beta(d)\sigma$ is non-increasing with depth, explaining conservative late-depth expansions.
+
+\subsection{When do $\Lambda$ and $\Psi$ collapse to a default? When are carve-outs justified?}
+
+Let the ledger objective be
+\[
+J \ :=\ \mathbb{E}\big[S(x,\Pi)\big]\ -\ \lambda\cdot \mathrm{Cost}(x,\Pi),
+\]
+where $\lambda>0$ monetizes compute (tokens/retrieval/verification). 
+Define the \emph{risk-adjusted advantage} of deviating from $\Pi_0$ at state $x$:
+\begin{align*}
+  \mathrm{Adv}(x,\Delta\Pi)\ &:=\ \mathbb{E}\!\left[S(x,\Pi_0+\Delta\Pi)-S(x,\Pi_0)\right] \\
+  &-\lambda\ \Delta\mathrm{Cost}(x,\Delta\Pi),
+\end{align*}
+with $\|\Delta\Pi\|_\infty\le r$ enforced by the trust region.
+
+\paragraph{Constants are preferred when:}
+\begin{itemize}
+\item \textbf{(C1) Trust-region dominance:} $\sup_{\|\Delta\Pi\|\le r}\mathrm{Adv}(x,\Delta\Pi)\le 0$ for almost all $x$ (the tuner’s best response is $\Pi_0$).
+\item \textbf{(C2) Low-uncertainty, annealed $\beta$:} At late depth, $\beta(d)$ and $\sigma$ are small; exploration gains are dominated by compute penalties, pushing $\Pi\!\to\!\Pi_0$ and $L\!\to\!L_{\text{def}}$.
+\item \textbf{(C3) Homogeneous instances:} The ledger shows negligible variance in $\mathrm{Adv}$ across contexts, so the optimal behavior converges to a global default.
+\item \textbf{(C4) Budget exhaustion:} When budget bits in $C$ flip, projection clamps $\Pi$ to $\Pi_0$; $\Lambda$ emits a default/stop label.
+\end{itemize}
+
+\paragraph{Sufficient condition for a single carve-out.}
+Let $E_\gamma=\{x:\ \sup_{\|\Delta\Pi\|\le r}\mathrm{Adv}(x,\Delta\Pi)\ge \gamma\}$ with mass $\rho$. 
+Suppose $\Lambda$ deploys one extra label $L_\star$ via a gate $g(x)\in\{\text{default},\text{carve-out}\}$ whose true-positive rate is $\alpha=\Pr(g=\text{carve-out}\mid x\in E_\gamma)$ and false-positive rate is $\eta=\Pr(g=\text{carve-out}\mid x\notin E_\gamma)$. 
+Let the false-positive harm be bounded by $M=Lr+\lambda\,\Delta\mathrm{Cost}_{\max}$; let $c_{\text{call}}(x,\Delta\Pi)$ be the per-invocation overhead not already in $\Delta\mathrm{Cost}$ and write $\bar c_{\text{call}}^{+}=\mathbb{E}[c_{\text{call}}\mid g=\text{carve-out}]$. 
+Then the expected improvement satisfies
+\begin{equation}
+\Delta J\ \ge\ \underbrace{\alpha\,\rho\,\gamma}_{\text{true gains}}
+\ -\ \underbrace{\eta\,(1-\rho)\,M}_{\text{false-positive harm}}
+\ -\ \underbrace{\big(\alpha\rho+\eta(1-\rho)\big)\,\bar c_{\text{call}}^{+}\ -\ c_{\text{fixed}}}_{\text{overhead}}.
+\label{eq:carveout-test}
+\end{equation}
+If the right-hand side is positive, adding $L_\star$ is beneficial; otherwise, prefer the default. 
+All quantities are estimable from the ledger and context features $C$.
+
+\paragraph{Remarks.}
+(C1) does not recommend ignoring positive-gain slices; it characterizes when the \emph{mass} of states has no reliable within-radius advantage. 
+In practice we upper-bound $c_{\text{call}}$ by a constant for a conservative check of~\eqref{eq:carveout-test}; equivalently, it may be absorbed into $\Delta\mathrm{Cost}$ if the accounting is consistent.
+
+\subsection{Bits-to-performance: control distortion $\Rightarrow$ selector shortfall}
+
+Let $\Pi^\star(x)$ denote the risk-adjusted best control at state $x$ for the ledger objective $J$. 
+Let $\widehat{\Pi}(x)=\Psi\big(P,\Lambda(P,C),C\big)$ be what NLEL deploys. 
+Measure control error by $d(\cdot,\cdot)$, the schema-normalized $\ell_\infty$ metric.
+
+\paragraph{Theorem 5.7 (Control distortion $\Rightarrow$ selector shortfall).}
+If $S(x,\Pi)$ is $L$-Lipschitz in $\Pi$, then
+\[
+\mathbb{E}_x\!\left[S(x,\Pi^\star) - S(x,\widehat{\Pi})\right]\ \le\ L\cdot \mathbb{E}_x\!\left[d\!\left(\Pi^\star(x),\widehat{\Pi}(x)\right)\right].
+\]
+Hence every bit of accuracy the labeller--tuner pair uses to reduce the expected control distortion translates linearly into selector gain; conversely, coarse quantization of $\Pi$ (few carve-outs) incurs an expected shortfall upper bounded by $L$ times that distortion.
+
+\paragraph{Quantized corollary.}
+If each scalar field $j$ is quantized to $2^{b_j}$ levels over $[a_j,b_j]$ and mixture/boolean fields are binned so that the schema-normalized sup step is $\Delta$, then the expected distortion is $\le \Delta/2$ and the shortfall is $\le L\Delta/2$. 
+This yields a concrete \emph{bits} $\Rightarrow$ \emph{performance gap} statement aligned with the schema.
+
+\subsection{Compute accounting under schema and quotas (optional)}
+
+Let $c_e(\Pi)$ be the (expected) per-expansion compute under $\Pi$, bounded as $c_{\min}\le c_e(\Pi)\le c_{\max}$. 
+If depth-$d$ emits branch quota $b_d$ and per-label bundle size $g_d$ (\texttt{gen\_count}), then the expected number of expansions up to depth $D$ obeys
+\[
+\mathbb{E}[\text{exp}]\ \le\ \sum_{d=0}^{D-1}\Big(\prod_{j=0}^{d-1} b_j\Big)\, b_d\, g_d,
+\]
+and the total expected compute lies in $[c_{\min},c_{\max}]\times \mathbb{E}[\text{exp}]$. 
+This supports success@compute reporting and budget-aware ablations consistent with the schema and quotas.
+
 
 \section{Experiments}
 % TODO: Empirical check for depth annealing (Section 3.7(iii)):
@@ -263,7 +385,6 @@ NLEL is compatible with a non-reasoning tuner or a reasoning tuner (e.g., CoT/To
 \appendix
 
 \section{Additional Experimental Details}
-\section{Proofs}
 \section{Extra Results}
 
 \end{document}
