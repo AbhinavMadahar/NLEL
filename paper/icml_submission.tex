@@ -124,7 +124,12 @@ An instance consists of a task $T$, root $v_0$ text, and an evaluation function 
 Unless noted, we treat $G$ as a tree; extension to DAGs is straightforward by merging isomorphic textual states.
 
 \paragraph{Notation summary.}
+See Table~\ref{tab:notation}.
+
+\begin{table*}[h]
 \begin{center}
+\caption{Notation summary.}
+\label{tab:notation}
 \begin{tabular}{@{}ll@{}}
 \toprule
 Symbol & Meaning \\\midrule
@@ -142,6 +147,7 @@ $c_e,\,C_t$ & per-edge and cumulative compute cost \\
 \bottomrule
 \end{tabular}
 \end{center}
+\end{table*}
 
 \section{Method}
 \label{sec:method}
@@ -340,12 +346,12 @@ Let $E_\gamma=\{x:\ \sup_{\|\Delta\Pi\|\le r}\mathrm{Adv}(x,\Delta\Pi)\ge \gamma
 Suppose $\Lambda$ deploys one extra label $L_\star$ via a gate $g(x)\in\{\text{default},\text{carve-out}\}$ whose true-positive rate is $\alpha=\Pr(g=\text{carve-out}\mid x\in E_\gamma)$ and false-positive rate is $\eta=\Pr(g=\text{carve-out}\mid x\notin E_\gamma)$. 
 Let the false-positive harm be bounded by $M=Lr+\lambda\,\Delta\mathrm{Cost}_{\max}$; let $c_{\text{call}}(x,\Delta\Pi)$ be the per-invocation overhead not already in $\Delta\mathrm{Cost}$ and write $\bar c_{\text{call}}^{+}=\mathbb{E}[c_{\text{call}}\mid g=\text{carve-out}]$. 
 Then the expected improvement satisfies
-\begin{equation}
+\begin{align*}
 \Delta J\ \ge\ \underbrace{\alpha\,\rho\,\gamma}_{\text{true gains}}
-\ -\ \underbrace{\eta\,(1-\rho)\,M}_{\text{false-positive harm}}
-\ -\ \underbrace{\big(\alpha\rho+\eta(1-\rho)\big)\,\bar c_{\text{call}}^{+}\ -\ c_{\text{fixed}}}_{\text{overhead}}.
+  \ &-\ \underbrace{\eta\,(1-\rho)\,M}_{\text{false-positive harm}} \\
+  \ &-\ \underbrace{\big(\alpha\rho+\eta(1-\rho)\big)\,\bar c_{\text{call}}^{+}\ -\ c_{\text{fixed}}}_{\text{overhead}}.
 \label{eq:carveout-test}
-\end{equation}
+\end{align*}
 If the right-hand side is positive, adding $L_\star$ is beneficial; otherwise, prefer the default. 
 All quantities are estimable from the ledger and context features $C$.
 

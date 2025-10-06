@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 08:23
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 09:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -750,119 +750,135 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Overfull \hbox (48.9703pt too wide) in paragraph at lines 128--144
- [] 
- []
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
 
 
 
 [4]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 270--274
+
+
+
+[5]
+Underfull \hbox (badness 10000) in paragraph at lines 276--280
  \OT1/ptm/b/n/10 (+20) Propo-si-tion 5.1 (NLEL strictly gen-er-al-izes
  []
 
 
-Underfull \hbox (badness 1226) in paragraph at lines 270--274
+Underfull \hbox (badness 1226) in paragraph at lines 276--280
 \OT1/ptm/b/n/10 (+20) CoT/ToT/GoT). \OT1/ptm/m/n/10 (+20) NLEL re-cov-ers stan-
 dard con-trollers
  []
 
 
+Underfull \vbox (badness 6364) has occurred while \output is active []
 
-[5]
-Underfull \hbox (badness 5050) in paragraph at lines 303--304
+
+
+
+Underfull \hbox (badness 5050) in paragraph at lines 309--310
  \OT1/ptm/b/n/10 (+20) Propo-si-tion 5.4 (Trust-region bound). \OT1/ptm/m/n/10 
 (+20) If $\OT1/cmr/m/n/10 ^^E[] =
  []
 
 
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 321--324
+Underfull \hbox (badness 10000) in paragraph at lines 327--330
 \OT1/ptm/m/n/10 (+20) where $\OML/cmm/m/it/10 ^^U > \OT1/cmr/m/n/10 0$ \OT1/ptm
 /m/n/10 (+20) mon-e-tizes com-pute (to-
  []
 
 
-Underfull \hbox (badness 3209) in paragraph at lines 321--324
+Underfull \hbox (badness 3209) in paragraph at lines 327--330
 \OT1/ptm/m/n/10 (+20) kens/retrieval/verification). De-fine the \OT1/ptm/m/it/1
 0 (+20) risk-adjusted
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 332--333
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 338--339
 []\OT1/ptm/b/n/10 (+20) (C1) Trust-region dom-i-nance:
  []
 
 
-Underfull \hbox (badness 1968) in paragraph at lines 332--333
+Underfull \hbox (badness 1968) in paragraph at lines 338--339
 [][] []\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 x; \OT1/cmr/m/n/10 ^^A^^E) \OMS/cmsy/m
 /n/10 ^^T \OT1/cmr/m/n/10 0$ \OT1/ptm/m/n/10 (+20) for al-most all $\OML/cmm/m/
 it/10 x$
  []
 
 
-
-[6]
-Overfull \hbox (33.27348pt too wide) detected at line 348
-[]\OT1/cmr/m/n/10 ^^A\OML/cmm/m/it/10 J  \OMS/cmsy/m/n/10 ^^U  []  ^^@  []  ^^@
-  [] \OML/cmm/m/it/10 :
- []
+LaTeX Warning: Reference `eq:carveout-test' on page 7 undefined on input line 3
+60.
 
 
 
 
-Underfull \hbox (badness 1735) in paragraph at lines 401--404
+
+[7]
+Underfull \hbox (badness 1735) in paragraph at lines 407--410
 \OT1/ptm/b/n/10 (+20) Compute-aware met-rics. \OT1/ptm/m/n/10 (+20) In line wit
 h the con-trol
  []
 
 
+Underfull \vbox (badness 2173) has occurred while \output is active []
 
-[7]
+
 
 
 
 [8]
+Underfull \vbox (badness 6125) has occurred while \output is active []
+
+
 
 
 
 [9]
 
 
-Underfull \hbox (badness 3838) in paragraph at lines 574--575
+
+[10]
+Underfull \hbox (badness 3838) in paragraph at lines 580--581
 []\OT1/ptm/m/n/10 (+20) We in-tro-duced \OT1/ptm/b/n/10 (+20) Nat-u-ral Lan-gua
 ge Edge La-belling
  []
 
 
-
-[10]
-
-(./icml_submission.bbl
-
-[11])
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
+
+
+
+[11] (./icml_submission.bbl
+
+)
 
 [12] (./icml_submission.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
+
+
+LaTeX Warning: There were undefined references.
+
  ) 
 Here is how much of TeX's memory you used:
- 18109 strings out of 474567
- 344553 string characters out of 5753151
- 770741 words of memory out of 5000000
- 40571 multiletter control sequences out of 15000+600000
+ 18108 strings out of 474567
+ 344507 string characters out of 5753151
+ 772061 words of memory out of 5000000
+ 40570 multiletter control sequences out of 15000+600000
  600895 words of font info for 314 fonts, out of 8000000 for 9000
  309 hyphenation exceptions out of 8191
- 84i,17n,87p,2805b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,19n,87p,2805b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
@@ -881,7 +897,7 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icml_submission.pdf (12 pages, 298720 bytes).
+Output written on icml_submission.pdf (12 pages, 299667 bytes).
 PDF statistics:
  147 PDF objects out of 1000 (max. 8388607)
  92 compressed objects within 1 object stream
