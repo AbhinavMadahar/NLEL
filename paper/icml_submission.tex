@@ -1,5 +1,5 @@
 \documentclass{article}
-\usepackage{icml2025}
+\usepackage[accepted]{icml2025}
 
 \usepackage{microtype}
 \usepackage{graphicx}
@@ -24,32 +24,24 @@
 \icmltitlerunning{Working Title}
 
 
-
 \begin{document}
 
 \twocolumn[
-\icmltitle{Working Title}
-
-\begin{icmlauthorlist}
-\icmlauthor{First A. Author}{xxx}
-\icmlauthor{Second B. Author}{yyy}
-\icmlauthor{Third C. Author}{zzz}
-\end{icmlauthorlist}
-
-\icmlaffiliation{xxx}{Affiliation One, City, Country}
-\icmlaffiliation{yyy}{Affiliation Two, City, Country}
-\icmlaffiliation{zzz}{Affiliation Three, City, Country}
-
-\icmlcorrespondingauthor{First A. Author}{first.last@institution.edu}
-
-\icmlkeywords{Machine Learning, ICML}
-\vskip 0.3in
-]
-
-\printAffiliationsAndNotice{}
+\icmltitle{Natural Language Edge Labelling: Decoupling Intent from Execution in Structured LM Reasoning}
 
 \begin{abstract}
+Controllers for structured LM reasoning---e.g., Chain-of-Thought, self-consistency, and Tree-of-Thoughts---often entangle \emph{what to try next} with \emph{how to execute it}, exposing only coarse global knobs and yielding brittle, compute-inefficient, and hard-to-audit behavior. We introduce \textbf{Natural Language Edge Labelling (NLEL)}, a labeller--tuner overlay that attaches a free-form natural-language directive to each search edge and translates it into a \emph{schema-bounded control vector} for decoding, search (branch quotas, exploration $\beta$), generation bundle size, retrieval mixtures, and verification passes. A labeller $\Lambda$ emits labels from the parent state and a compact context; a tuner $\Psi$ maps $(P, L, C)\to \Pi$, with strict schema validation and \emph{trust-region projection} around safe defaults. Downstream selection remains ToT-style with score $S=\mu+\beta\sigma$ and depth-annealed $\beta$. We show NLEL strictly generalizes CoT/ToT, prove an anytime-monotonicity property for top-$k$ selection under label-conditioned bundles, and bound selector shortfall by control-vector distortion---providing decision-relevant justification for guards like trust regions and verification passes. We instantiate $\Psi$ as a prompt-only \emph{JSON Parameter Emitter} and preregister an evaluation on GSM8K, MATH (subset), StrategyQA, and ARC-Challenge with compute-aware reporting (success@compute, tokens-per-success) and ablations over $\Lambda$, $\Psi$, trust-region radius, and control quantization; preregistered forecasts anticipate accuracy gains at comparable token budgets and improved success@compute under constraints. NLEL offers an interpretable, model-agnostic interface that separates intent from execution for controllable, auditable LM inference.
 \end{abstract}
+
+\begin{icmlauthorlist}
+\icmlauthor{Abhinav Madahar}{ind}
+\end{icmlauthorlist}
+\icmlaffiliation{ind}{Independent Computer Scientist}
+
+\icmlcorrespondingauthor{Abhinav Madahar}{abhinavmadahar@gmail.com}
+]
+
+%\printAffiliationsAndNotice{}
 
 \section{Introduction}
 
