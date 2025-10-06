@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 07:22
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 07:57
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -833,11 +833,18 @@ h the con-trol
 
 
 
-[9] (./icml_submission.bbl
+[9]
+
+(./icml_submission.bbl
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+
+[10]
 
 )
 
-[10] (./icml_submission.aux)
+[11] (./icml_submission.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -869,10 +876,10 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icml_submission.pdf (10 pages, 287613 bytes).
+Output written on icml_submission.pdf (11 pages, 291939 bytes).
 PDF statistics:
- 141 PDF objects out of 1000 (max. 8388607)
- 88 compressed objects within 1 object stream
+ 144 PDF objects out of 1000 (max. 8388607)
+ 90 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  61453 words of extra memory for PDF output out of 61914 (max. 10000000)
 

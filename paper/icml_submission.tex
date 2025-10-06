@@ -557,6 +557,71 @@ Our guards are non-intrusive (schema validation, trust-region projection, depth-
 
 \section*{Impact Statement}
 
+This paper introduces \emph{Natural Language Edge Labelling} (NLEL), a
+labeller--tuner control layer that translates human-readable edge labels
+into schema-bounded control vectors for decoding, search, retrieval, and
+verification during structured reasoning. By separating \emph{what to try next}
+(a natural-language label) from \emph{how to run it} (a constrained control vector),
+the approach is intended to make LM inference more sample-efficient,
+auditable, and adaptable while remaining compatible with existing
+Tree-of-Thought selectors (here using $S=\mu+\beta\sigma$ with depth-annealed
+$\beta$) and standard safety guards (schema-and-bounds validation,
+trust-region projection around $\Pi_0$, verification passes, and budget bits;
+see Section~\ref{sec:method}).
+
+\paragraph{Potential positive impacts.}
+NLEL exposes explicit, interpretable controls (e.g., branch quotas,
+retrieval mixtures, verification passes) that can align resource use with
+uncertainty and reduce tokens-per-success, potentially lowering the
+environmental footprint of iterative reasoning at scale. The label interface
+creates a human-readable trace (e.g., ``seek a counterexample,'' ``work
+backward,'' ``call retrieval'') that can improve transparency for users,
+auditors, and educators. Because the overlay treats the child reasoner and
+selector as pluggable, it may accelerate research on safer controllers
+without retraining core models. Compute-aware reporting
+(\emph{success@compute}, tokens-per-success) further encourages responsible
+comparison across methods (Section~\ref{sec:experiments}).
+
+\paragraph{Risks and potential negative impacts.}
+A mechanism that reliably steers inference can also be misused. Free-form
+labels might be engineered to route around content safeguards, and
+fine-grained retrieval control can amplify spurious, biased, or
+privacy-sensitive information if underlying indices are weak. Even with
+trust-region and budget guards, poorly chosen controls (e.g., excessive
+branching or under-verification) can inflate cost, increase latency, or
+raise the risk of confidently wrong outputs. Finally, because label
+semantics are contextual, taxonomies that help on math or science QA may
+entrench domain-specific biases when transferred to other domains.
+
+\paragraph{Mitigations and responsible use.}
+The design includes non-intrusive guards (schema and bounds validation,
+trust-region projection around safe defaults, verification passes, budget
+limits) and compute-aware metrics. We further recommend: (i) content-aware
+filters and allow-lists for labels that can trigger tool use or sensitive
+retrieval; (ii) auditable ledgers that log $(P,L,C)\!\mapsto\!\Pi$ mappings
+and verifier outcomes; (iii) fairness and domain-shift evaluations that
+measure differential performance across subpopulations and tasks; (iv)
+privacy reviews for any retrieval indices; and (v) explicit reporting of
+wall-clock latency and energy alongside token counts. Forecasted numbers
+will be replaced with empirical measurements, and we will release seeds and
+logs to support replication and auditing.
+
+\paragraph{Scope of claims.}
+Our empirical scope---four public reasoning suites
+(\emph{GSM8K}, \emph{MATH (subset)}, \emph{StrategyQA}, \emph{ARC-Challenge}),
+a fixed child reasoner, and a specific ToT culling rule---limits external
+validity. Several tables in Section~\ref{sec:experiments} are pre-registered
+\emph{forecasts} rather than completed runs; realized gains may differ once
+experiments are finalized and audited. The broader social value of NLEL
+therefore depends on careful deployment with content-level safeguards,
+transparent reporting, and continued evaluation under domain shift.
+
+Overall, NLEL’s intended societal contribution is a more interpretable and
+budget-aware control interface for LM reasoning. With appropriate guardrails
+and open evaluation, it can help the community study---and stress-test---
+controllable reasoning systems while keeping claims proportional to
+evidence.
+
 % \section*{Acknowledgements}
 
 \bibliographystyle{icml2025}
