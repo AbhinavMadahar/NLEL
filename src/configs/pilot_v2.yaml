@@ -1,0 +1,19 @@
+# Pilot v2 configuration (0.5x, paired, global token cap)
+benchmark: gsm8k
+n_items: 650
+seed: 42
+global_token_cap: 4000  # includes controllers for NLEL
+arms:
+  - tot
+  - nlel
+  - nlel:no_labeller
+guards:
+  max_depth: 3
+  max_labels: 2
+  ledger_max_rows: 8
+  trust_region_r: 0.15
+report:
+  - mcnemar
+  - bootstrap
+  - success_at_compute
+  - tokens_per_success
