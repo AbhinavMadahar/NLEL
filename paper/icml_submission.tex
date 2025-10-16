@@ -523,6 +523,43 @@ Appendix materials include step-level traces where the labeller emits instructio
 \paragraph{Summary (to be updated post-study).}
 Pre-registered forecast: NLEL (JPE) will consistently outperform strong ToT-style baselines by $\sim2$--$4$ points on accuracy and deliver $\sim1.4\times$ success@compute at half the baseline budget, with the largest relative gains in compute-constrained regimes. Ablations and sensitivity trends are expected to mirror Section~\ref{sec:theory}.
 
+
+
+
+\subsection{Pilot Study: Split-Role on AWS Bedrock}\label{sec:pilot-splitrole}
+
+\paragraph{Goal and setting.}
+We design a pilot explicitly optimized for a hard \$100 ceiling on AWS Bedrock while directly probing the compute–constrained regime where our method is forecast to yield its largest relative benefits.
+To maximize inference per dollar we use a \emph{paired} design at a single budget point of \textbf{0.5$\times$}: every item is evaluated under both controllers (baseline ToT vs.\ NLEL), and statistics are computed on the same items.
+
+\paragraph{Models and roles.}
+The child reasoner is \textbf{Claude~3 Sonnet} (\texttt{anthropic.claude-3-sonnet-20240229-v1:0}); the labeller $\Lambda$, tuner $\Psi$, and verifier are \textbf{Cohere Command-R} (\texttt{cohere.command-r}).
+All models are accessed through AWS Bedrock (managed inference; no self-hosted GPUs).
+We keep the selector and search policy identical to the main method (\emph{ToT selector} $S=\mu+\beta\sigma$ with depth-annealed $\beta$).
+
+\paragraph{Controls and budgets.}
+We enforce a \emph{global} per-item token budget (prompt{+}completion) of \textbf{4{,}000 tokens per arm} at \textbf{0.5$\times$}, where all calls made by a controller count against the same budget.
+For \textbf{ToT}, the 4k budget is spent entirely by the child reasoner.
+For \textbf{NLEL}, the 4k budget includes \emph{both} child and controller tokens (labeller $\Lambda$, tuner $\Psi$, verifier).
+Budget accounting uses Bedrock metering and is aggregated across roles; items exceeding the cap in any arm are truncated at the cap for analysis.
+We keep all search \emph{guards} as preregistered: depth $D\!\le\!3$, labels per depth $L\!\le\!2$, ledger size $\le\!8$ rows, trust-region radius $r\!=\!0.15$, and schema validation enabled.
+
+\paragraph{Sample and metrics.}
+We evaluate \textbf{$n=650$} randomly sampled GSM8K test items (seed $=42$), paired across arms.
+Primary outcomes are \emph{accuracy} (exact match) and \emph{success@compute} computed under the global cap.
+We also report \emph{tokens-per-success}, verifier accept rate, and expansions per solved instance.
+Uncertainty for accuracy and success@compute is reported via nonparametric bootstrap (10{,}000 resamples over paired items; percentile intervals); paired accuracy differences are tested with McNemar's test on discordant pairs.
+We additionally log wall-clock time and \$-cost per arm as descriptive secondary outcomes.
+
+\paragraph{Controllers compared.}
+(i) \textbf{ToT} baseline (no labels) with the policy above; (ii) \textbf{NLEL} (split-role labeller–tuner–verifier) using the same child model and selector.
+Both arms operate at the same global 4k cap; prompts, stopping criteria, and guards are identical where applicable.
+
+\paragraph{Micro-ablation.}
+To localize gains to the labeller–tuner mechanism, we add a single, cheap toggle on the \emph{same} items at 0.5$\times$:
+\emph{No-$\Lambda$}---the labeller is disabled and labels are fixed to the default heuristic $L_{\mathrm{def}}$ while the tuner and verifier remain active.
+This ablation preserves the controller footprint but removes the learned labels, isolating the contribution of $\Lambda$ without expanding scope or budget.
+(An alternative 2-bit quantization of the controls is supported in code but not activated in this pilot to conserve budget.)
 \section{Limitations}
 
 Our study introduces \emph{Natural Language Edge Labelling} (NLEL)---a labeller--tuner overlay that maps free-form edge labels to a control vector $\Pi$ (decoding, search, retrieval, verification) under a trust-region guard, with Tree-of-Thought (ToT) child selection using the score $S=\mu+\beta\sigma$ (\S\ref{sec:method}). While modular and general, this design has several limitations that bound our claims.

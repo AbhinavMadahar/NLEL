@@ -1,8 +1,8 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  6 OCT 2025 09:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  16 OCT 2025 00:09
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
-**icml_submission
+**icml_submission.tex
 (./icml_submission.tex
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -824,27 +824,46 @@ h the con-trol
 
 
 [9]
+Overfull \hbox (7.21349pt too wide) in paragraph at lines 536--539
+\OT1/ptm/m/n/10 (-20) (\OT1/pcr/m/n/10 anthropic.claude-3-sonnet-20240229-v1:0\
+OT1/ptm/m/n/10 (-20) );
+ []
+
+
+Underfull \vbox (badness 1168) has occurred while \output is active []
+
+
+
+
+Underfull \hbox (badness 6526) in paragraph at lines 555--557
+\OT1/ptm/m/n/10 (+20) with the pol-icy above; (ii) \OT1/ptm/b/n/10 (+20) NLEL \
+OT1/ptm/m/n/10 (+20) (split-role la-
+ []
 
 
 
 [10]
-Underfull \hbox (badness 3838) in paragraph at lines 572--573
+
+
+Underfull \hbox (badness 3838) in paragraph at lines 609--610
 []\OT1/ptm/m/n/10 (+20) We in-tro-duced \OT1/ptm/b/n/10 (+20) Nat-u-ral Lan-gua
 ge Edge La-belling
  []
 
 
 
+[11]
 
-Underfull \vbox (badness 7667) has occurred while \output is active []
+(./icml_submission.bbl
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 
-[11] (./icml_submission.bbl
+[12]
 
 )
 
-[12] (./icml_submission.aux)
+[13] (./icml_submission.aux)
  ***********
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
@@ -855,13 +874,13 @@ LaTeX Warning: There were undefined references.
 
  ) 
 Here is how much of TeX's memory you used:
- 18077 strings out of 474567
- 344034 string characters out of 5753151
- 761477 words of memory out of 5000000
- 40550 multiletter control sequences out of 15000+600000
- 599138 words of font info for 308 fonts, out of 8000000 for 9000
+ 18087 strings out of 474567
+ 344142 string characters out of 5753151
+ 761985 words of memory out of 5000000
+ 40551 multiletter control sequences out of 15000+600000
+ 599656 words of font info for 314 fonts, out of 8000000 for 9000
  309 hyphenation exceptions out of 8191
- 84i,19n,87p,2805b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,19n,87p,2809b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
@@ -880,10 +899,10 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icml_submission.pdf (12 pages, 298151 bytes).
+Output written on icml_submission.pdf (13 pages, 304285 bytes).
 PDF statistics:
- 147 PDF objects out of 1000 (max. 8388607)
- 92 compressed objects within 1 object stream
+ 151 PDF objects out of 1000 (max. 8388607)
+ 95 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  57357 words of extra memory for PDF output out of 61914 (max. 10000000)
 
