@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  16 OCT 2025 00:09
+This is pdfTeX, Version 3.141592653-2.6-1.40.26 (TeX Live 2025/dev/Debian) (preloaded format=pdflatex 2025.9.5)  19 OCT 2025 05:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -804,13 +804,9 @@ it/10 x$
 
 
 
-LaTeX Warning: Reference `eq:carveout-test' on page 7 undefined on input line 3
-52.
-
-
 
 [7]
-Underfull \hbox (badness 1735) in paragraph at lines 399--402
+Underfull \hbox (badness 1735) in paragraph at lines 400--403
 \OT1/ptm/b/n/10 (+20) Compute-aware met-rics. \OT1/ptm/m/n/10 (+20) In line wit
 h the con-trol
  []
@@ -824,7 +820,7 @@ h the con-trol
 
 
 [9]
-Overfull \hbox (7.21349pt too wide) in paragraph at lines 536--539
+Overfull \hbox (7.21349pt too wide) in paragraph at lines 537--540
 \OT1/ptm/m/n/10 (-20) (\OT1/pcr/m/n/10 anthropic.claude-3-sonnet-20240229-v1:0\
 OT1/ptm/m/n/10 (-20) );
  []
@@ -835,7 +831,7 @@ Underfull \vbox (badness 1168) has occurred while \output is active []
 
 
 
-Underfull \hbox (badness 6526) in paragraph at lines 555--557
+Underfull \hbox (badness 6526) in paragraph at lines 556--558
 \OT1/ptm/m/n/10 (+20) with the pol-icy above; (ii) \OT1/ptm/b/n/10 (+20) NLEL \
 OT1/ptm/m/n/10 (+20) (split-role la-
  []
@@ -845,7 +841,7 @@ OT1/ptm/m/n/10 (+20) (split-role la-
 [10]
 
 
-Underfull \hbox (badness 3838) in paragraph at lines 609--610
+Underfull \hbox (badness 3838) in paragraph at lines 610--611
 []\OT1/ptm/m/n/10 (+20) We in-tro-duced \OT1/ptm/b/n/10 (+20) Nat-u-ral Lan-gua
 ge Edge La-belling
  []
@@ -868,19 +864,15 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 LaTeX2e <2024-11-01> patch level 2
 L3 programming layer <2025-01-18>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
  ) 
 Here is how much of TeX's memory you used:
- 18087 strings out of 474567
- 344142 string characters out of 5753151
- 761985 words of memory out of 5000000
- 40551 multiletter control sequences out of 15000+600000
+ 18091 strings out of 474567
+ 344260 string characters out of 5753151
+ 761882 words of memory out of 5000000
+ 40555 multiletter control sequences out of 15000+600000
  599656 words of font info for 314 fonts, out of 8000000 for 9000
  309 hyphenation exceptions out of 8191
- 84i,19n,87p,2809b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 84i,18n,87p,2809b,1082s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/share/texli
@@ -899,7 +891,7 @@ f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/ty
 pe1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/
 utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></us
 r/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on icml_submission.pdf (13 pages, 304285 bytes).
+Output written on icml_submission.pdf (13 pages, 304254 bytes).
 PDF statistics:
  151 PDF objects out of 1000 (max. 8388607)
  95 compressed objects within 1 object stream
