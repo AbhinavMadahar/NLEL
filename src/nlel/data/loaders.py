@@ -1,20 +1,29 @@
+
+import os
+try:
+    from datasets import DownloadConfig
+    _NLEL_LOCAL_ONLY = os.getenv("HF_DATASETS_OFFLINE", "0") == "1"
+    def _dlcfg(): return DownloadConfig(local_files_only=_NLEL_LOCAL_ONLY)
+except Exception:
+    _NLEL_LOCAL_ONLY = False
+    def _dlcfg(): return None
 from typing import Iterator, Dict, Any, Optional
 import datasets
 import re
 def load_gsm8k(split: str = "test", subset: Optional[int] = None) -> Iterator[Dict[str, Any]]:
-    ds = datasets.load_dataset("openai/gsm8k", "main")[split]
+    ds = datasets.load_dataset("openai/gsm8k", "main", download_config=_dlcfg())[split]
     for i, row in enumerate(ds):
         if subset is not None and i >= subset: break
         yield {"id": f"gsm8k-{i}", "question": row["question"], "answer": row["answer"]}
 def load_strategyqa(split: str = "test", subset: Optional[int] = None) -> Iterator[Dict[str, Any]]:
-    ds = datasets.load_dataset("strategyqa", "default")[split]
+    ds = datasets.load_dataset("strategyqa", "default", download_config=_dlcfg())[split]
     for i, row in enumerate(ds):
         if subset is not None and i >= subset: break
         ans = row.get("answer", None)
         gold = None if ans is None else ("yes" if ans else "no")
         yield {"id": f"strategyqa-{i}", "question": row["question"], "answer": gold}
 def load_arc_challenge(split: str = "test", subset: Optional[int] = None) -> Iterator[Dict[str, Any]]:
-    ds = datasets.load_dataset("ai2_arc", "ARC-Challenge")[split]
+    ds = datasets.load_dataset("ai2_arc", "ARC-Challenge", download_config=_dlcfg())[split]
     for i, row in enumerate(ds):
         if subset is not None and i >= subset: break
         stem = row["question"]; choices = row["choices"]["text"]; label = row["choices"]["label"]; gold_label = row["answerKey"]
@@ -31,7 +40,7 @@ def load_math_subset(split: str = "test", subset: Optional[int] = 500) -> Iterat
     falling back to any 'answer' field, and skip items we cannot parse.
     Returns dicts with keys: {"id", "question", "answer"}.
     """
-    ds = datasets.load_dataset("hendrycks/competition_math", "all")[split]
+    ds = datasets.load_dataset("hendrycks/competition_math", "all", download_config=_dlcfg())[split]
     count = 0
     for i, row in enumerate(ds):
         if subset is not None and count >= subset:

@@ -47,28 +47,14 @@ class OpenAIChatModel(TextModel):
         usage = {"prompt_tokens": getattr(resp.usage, "prompt_tokens", 0), "completion_tokens": getattr(resp.usage, "completion_tokens", 0)}
         return msg, {"usage": usage}
 
-def get_model(spec: str) -> TextModel:
-    if ":" in spec:
-        kind, name = spec.split(":", 1)
-    else:
-        kind, name = "dummy", spec
-    if kind == "dummy": return DummyModel(mode=name)
-    if kind == "openai": return OpenAIChatModel(model=name)
-    raise ValueError(f"Unsupported model spec: {spec}")
+def get_model(spec: str):
+    """Resolve a model spec into a TextModel.
 
+    Supported:
+      - "hf:<model_or_path>" or "local:<...>" — Hugging Face Transformers (offline by default)
+      - "dummy:<mode>" — test stub
 
-# ---- Extended resolver (split-role pilot) ----
-try:
-    from .bedrock import BedrockTextModel
-except Exception:
-    BedrockTextModel = None  # noqa
-
-def get_model(spec: str) -> TextModel:
-    """
-    Resolve model spec into a TextModel.
-      - "dummy:<mode>"
-      - "openai:<model_name>"
-      - "bedrock:<model_id>"
+    No external APIs are used by this resolver.
     """
     if ":" in spec:
         kind, name = spec.split(":", 1)
@@ -77,11 +63,8 @@ def get_model(spec: str) -> TextModel:
 
     if kind == "dummy":
         return DummyModel(mode=name)
-    if kind == "openai":
-        return OpenAIChatModel(model=name)
-    if kind == "bedrock":
-        if BedrockTextModel is None:
-            raise RuntimeError("Bedrock backend not available (install boto3 and configure AWS credentials).")
-        return BedrockTextModel(model_id=name)
-    raise ValueError(f"Unsupported model spec: {spec}")
-# ---- End extended resolver ----
+    if kind in ("hf", "local", "transformers"):
+        from .hf_local import HFLocalTextModel
+        return HFLocalTextModel(model_name_or_path=name, local_files_only=True)
+
+    raise ValueError(f"Unsupported model spec for local-only resolver: {spec}")
